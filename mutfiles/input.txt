@@ -1,0 +1,4 @@
+Native	position	mutant
+L	2	K
+R	77	L
+A	91	K

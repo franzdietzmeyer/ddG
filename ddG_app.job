@@ -1,0 +1,35 @@
+#!/bin/bash
+#SBATCH --job-name=ddG
+#SBATCH --output=cart_ddg.%J
+#SBATCH --time=1-00:00:00
+#SBATCH --ntasks=1
+#SBATCH --nodes=1
+#SBATCH --mem=8G
+#SBATCH --partition=paul
+
+mutfile=$1
+
+module load Rosetta
+ROSETTA="/software/all/Rosetta/3.13-gompi-2020b"
+
+mkdir -p out_$1
+
+
+$ROSETTA/bin/cartesian_ddg.mpi.linuxgccrelease \
+    -s input/INPUT.pdb\
+    -ddg::iterations 3\
+    -ddg::score_cutoff 1.0\
+    -ddg::dump_pdbs false\
+    -ddg::bbnbrs 1\
+    -score:weights ref2015_cart\
+    -ddg::mut_file mutfiles/$1.mutfile\
+    -ddg::frag_nbrs 2\
+    -ignore_zero_occupancy false\
+    -missing_density_to_jump \
+    -ddg:flex_bb true\
+    -ddg::force_iterations true\
+    -fa_max_dis 9.0\
+    -ddg::json true\
+    -ddg:legacy false\
+    -ddg::cartesian true \
+    -out:path:all out_$1
